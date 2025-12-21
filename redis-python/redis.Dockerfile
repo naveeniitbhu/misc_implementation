@@ -1,0 +1,16 @@
+# Use the official PostgreSQL image from DockerHub
+FROM postgres:17
+
+# Set environment variables for the PostgreSQL database (default values, override during runtime)
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=postgres
+ENV POSTGRES_DB=testDB-redis
+
+# Expose PostgreSQL default port
+EXPOSE 5432
+
+# Start PostgreSQL server
+CMD ["postgres"]
+
+# 1. docker build -f redis.Dockerfile -t redis-testing .
+# 2. docker run --name redis-testing-container -p 5400:5432 -d redis-testing
