@@ -4,6 +4,7 @@ import json
 import logging
 from quixstreams import Application
 
+# Producing the data here
 def get_weather():
   response = requests.get(
     "https://api.open-meteo.com/v1/forecast",
@@ -36,6 +37,8 @@ def main():
       time.sleep(10)
 
 if __name__ == "__main__":
-  logging.basicConfig(level="DEBUG")
-  main()
-
+  try:
+    logging.basicConfig(level="DEBUG")
+    main()
+  except KeyboardInterrupt:
+    pass

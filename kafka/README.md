@@ -9,6 +9,12 @@
 | Consumer group | Logical subscriber          |
 | Retention      | How long messages are kept  |
 
+main.py contains producer code
+consumer.py has consumer code
+We can execut the above two to see kafka producer and consumer working(kafka should be running in local)
+
+Also, we can run only producer(main.py) and use kcat below to check consumer data
+
 # Install
 
 docker-compose up -d
