@@ -9,11 +9,11 @@
 | Consumer group | Logical subscriber          |
 | Retention      | How long messages are kept  |
 
-main.py contains producer code
+producer.py contains producer code
 consumer.py has consumer code
 We can execut the above two to see kafka producer and consumer working(kafka should be running in local)
 
-Also, we can run only producer(main.py) and use kcat below to check consumer data
+Also, we can run only producer(producer.py) and use kcat below to check consumer data
 
 # Install
 
@@ -52,7 +52,7 @@ Terminal-B
 kafka-console-producer --bootstrap-server localhost:9092 --topic orders
 
 Method: 2
-python main.py
+python producer.py
 (you can adjust sleep time in script)
 
 kcat -b localhost:9092 -C -t weather_data_demo -o end
