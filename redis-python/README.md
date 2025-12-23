@@ -1,3 +1,10 @@
+## redis-python
+
+This projects compares the avg write and read time between redis and postgres.
+For more info, please check the README of the project.
+
+# Commands
+
 python3 -m venv .venv
 source .venv/bin/activate
 
