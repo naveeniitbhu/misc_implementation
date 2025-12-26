@@ -22,7 +22,6 @@ pg.raw('select 1')
   .catch(() => process.exit(1));
 
 const TTL = 10; // seconds
-// const FAILURE_THRESHOLD = 3;
 
 async function getCircuitState(service) {
   const data = await redis.get(`cb:${service}`);
@@ -55,8 +54,7 @@ app.post('/orders', async (req, res) => {
   const service = 'user-service';
 
   let state = await getCircuitState(service);
-  setCircuitState(service, { is_up: !state.is_up });
-  console.log(state)
+  await setCircuitState(service, { is_up: state?.is_up ? state.is_up : false });
 
   if (state && !state.is_up) {
     return res.status(503).json({ message: 'Circuit OPEN for user-service' });

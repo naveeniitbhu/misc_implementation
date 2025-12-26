@@ -40,11 +40,6 @@ pg_config.raw('select 1')
     console.log('connection error'); process.exit(1)
   })
 
-
-app.get('/', (req, res) => {
-  res.send('Hello')
-})
-
 app.get('/users/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -59,13 +54,11 @@ app.get('/users/:id', async (req, res) => {
 
     res.json(user);
   } catch (err) {
-    console.error(err.message);
     res.status(500).json({ message: 'DB error' });
   }
 });
 
 app.post('/users', async (req, res) => {
-  console.log(49, req.body)
   const { name, email } = req.body;
 
   if (!name || !email) {
@@ -79,9 +72,7 @@ app.post('/users', async (req, res) => {
 
     res.status(201).json(user);
   } catch (err) {
-    console.error(err.message);
-
-    if (err.code === '23505') {
+    if (err.code === '23505') { // pstgres unique violations
       return res.status(409).json({ message: 'Email already exists' });
     }
 
