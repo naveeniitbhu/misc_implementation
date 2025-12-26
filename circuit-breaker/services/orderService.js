@@ -1,5 +1,6 @@
 const express = require('express');
-const { isServiceUp } = require('./checkServiceStatus')
+const redis = require('./redisClient');
+
 const app = express();
 
 app.use(express.json());
@@ -20,6 +21,22 @@ pg.raw('select 1')
   .then(() => console.log('DB connected'))
   .catch(() => process.exit(1));
 
+const TTL = 10; // seconds
+// const FAILURE_THRESHOLD = 3;
+
+async function getCircuitState(service) {
+  const data = await redis.get(`cb:${service}`);
+  return data ? JSON.parse(data) : null;
+}
+
+async function setCircuitState(service, state) {
+  await redis.set(
+    `cb:${service}`,
+    JSON.stringify(state),
+    { EX: TTL }
+  );
+}
+
 app.get('/orders/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -35,13 +52,14 @@ app.get('/orders/:id', async (req, res) => {
 app.post('/orders', async (req, res) => {
   const { user_id, amount } = req.body;
 
-  const userServiceUp = await isServiceUp('user-service');
+  const service = 'user-service';
 
-  if (!userServiceUp) {
-    console.log('INFO: User service is down')
-    return res.status(503).json({
-      message: 'User service is DOWN (circuit open)',
-    });
+  let state = await getCircuitState(service);
+  setCircuitState(service, { is_up: !state.is_up });
+  console.log(state)
+
+  if (state && !state.is_up) {
+    return res.status(503).json({ message: 'Circuit OPEN for user-service' });
   }
 
   const userRes = await fetch(`http://localhost:3000/users/${user_id}`);
